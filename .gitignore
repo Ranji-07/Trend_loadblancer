@@ -1,0 +1,41 @@
+# Node
+node_modules/
+
+# Logs
+logs
+*.log
+
+npm-debug.log*
+
+# Environment
+.env
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Jenkins
+jenkins_home/
+
+# Docker
+*.tar
+
+# Kubernetes
+kubeconfig
+
+# Build
+dist/
+build/
+
+# OS
+Thumbs.db

@@ -1,0 +1,14 @@
+node_modules
+.git
+.gitignore
+Dockerfile
+README.md
+.vscode
+.idea
+*.log
+.env
+terraform/
+jenkins/
+monitoring/
+kubernetes/
+*.md
