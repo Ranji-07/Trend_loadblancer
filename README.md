@@ -1,82 +1,225 @@
-# Trend Application CI/CD on AWS EKS
+# End-to-End DevOps CI/CD Pipeline on AWS EKS
 
-This repository is set up so you can build the Trend application phase by phase and deploy it to Amazon EKS through Jenkins.
+## Project Overview
 
-## Current Scope
+This project demonstrates a complete DevOps CI/CD pipeline by deploying a containerized web application on Amazon EKS using Jenkins, Docker, Terraform, GitHub, Kubernetes, Prometheus, and Grafana.
 
-- Application artifact available in `dist/`
-- Docker image build using Nginx
-- Jenkins pipeline scaffold for DockerHub and EKS deployment
-- Kubernetes manifests for `Deployment` and `LoadBalancer` `Service`
-- Minimal Terraform for Jenkins EC2 infrastructure and networking
+The workflow automates infrastructure provisioning, application packaging, Docker image publishing, Kubernetes deployment, and monitoring.
 
-## Project Structure
+## Project Architecture
 
 ```text
-.
-|-- .dockerignore
-|-- .gitignore
+GitHub
+        |
+        v
+GitHub Webhook
+        |
+        v
+Jenkins Pipeline
+        |
+        |---------------> Docker Build
+        |                     |
+        |                     v
+        |              DockerHub Repository
+        |                     |
+        v                     v
+Terraform -------------> Amazon EKS Cluster
+                              |
+                              v
+                     Kubernetes Deployment
+                              |
+                              v
+                        LoadBalancer Service
+                              |
+                              v
+                           End Users
+
+                     Monitoring Stack
+              Prometheus + Grafana Dashboard
+```
+
+## Tech Stack
+
+- AWS EC2
+- AWS IAM
+- AWS VPC
+- AWS EKS
+- Terraform
+- Docker
+- DockerHub
+- Jenkins
+- GitHub
+- Kubernetes
+- kubectl
+- Helm
+- Prometheus
+- Grafana
+
+## Project Workflow
+
+1. Developer pushes code to GitHub.
+2. GitHub Webhook triggers the Jenkins pipeline.
+3. Jenkins pulls the latest source code.
+4. Docker image is built.
+5. Docker image is pushed to DockerHub.
+6. Jenkins updates the Kubernetes Deployment.
+7. Amazon EKS pulls the latest Docker image.
+8. The application is exposed using a LoadBalancer Service.
+9. Prometheus collects cluster metrics.
+10. Grafana visualizes dashboards.
+
+## Repository Structure
+
+```text
+Trend_loadblancer/
+|
 |-- Dockerfile
 |-- Jenkinsfile
 |-- README.md
-|-- dist/
+|-- .gitignore
+|-- .dockerignore
+|
 |-- kubernetes/
+|   |-- namespace.yaml
 |   |-- deployment.yaml
 |   `-- service.yaml
-`-- terraform/
-    |-- main.tf
-    |-- outputs.tf
-    |-- terraform.tfvars
-    `-- variables.tf
+|
+|-- terraform/
+|   |-- main.tf
+|   |-- variables.tf
+|   |-- outputs.tf
+|   `-- terraform.tfvars
+|
+|-- dist/
+|
+`-- screenshots/
 ```
 
-## Suggested Phase Order
-
-1. Verify the app locally from `dist/`
-2. Build and test the Docker image
-3. Push the image to DockerHub
-4. Provision the Jenkins EC2 infrastructure with Terraform
-5. Install and configure Jenkins on the EC2 instance
-6. Create the EKS cluster
-7. Apply the Kubernetes manifests
-8. Configure Jenkins credentials and run the pipeline
-9. Add the GitHub webhook
-
-## Docker Build
+## Docker
 
 ```bash
-docker build -t your-dockerhub-username/trend-app:latest .
-docker run -d -p 80:80 your-dockerhub-username/trend-app:latest
+docker build -t ranjith02987/trend-app:latest .
+docker run -d -p 3000:80 ranjith02987/trend-app:latest
 ```
 
-## Kubernetes Deploy
-
-Update the image name in `kubernetes/deployment.yaml`, then apply:
+## Kubernetes
 
 ```bash
-kubectl apply -f kubernetes/deployment.yaml
-kubectl apply -f kubernetes/service.yaml
+kubectl apply -f kubernetes/
+kubectl get all -n trend
 ```
 
-## Jenkins Setup Notes
+## Jenkins Pipeline
 
-Before using the pipeline, configure these in Jenkins:
+Pipeline stages:
 
-- DockerHub credentials
-- GitHub repository access if needed
-- AWS credentials with EKS access
-- `kubectl` configured on the Jenkins server
+- Checkout Source
+- Validate Files
+- Build Docker Image
+- Push DockerHub Image
+- Deploy to Amazon EKS
+- Verify Deployment
 
-## Terraform Notes
+## Monitoring
 
-The Terraform configuration provisions:
+Monitoring stack:
 
+- Prometheus
+- Grafana
+
+Features:
+
+- Cluster Monitoring
+- Node Monitoring
+- Pod Monitoring
+- CPU Usage
+- Memory Usage
+- Network Usage
+
+## Screenshots
+
+Include screenshots for:
+
+- Jenkins Pipeline Success
+- DockerHub Repository
+- EKS Cluster
+- `kubectl` Output
+- Application
+- Grafana Dashboard
+- Prometheus Targets
+
+## Architecture Diagram Prompt
+
+Use this prompt in ChatGPT Image Generation, DALL-E, Microsoft Designer, Canva AI, Napkin AI, or Eraser AI:
+
+```text
+Create a professional AWS DevOps architecture diagram with a white background.
+
+The architecture should include:
+
+Developer
+↓
+GitHub Repository
+↓
+GitHub Webhook
+↓
+Jenkins Server running on AWS EC2
+↓
+Pipeline Stages:
+- Checkout Source Code
+- Build Docker Image
+- Push Docker Image to DockerHub
+- Deploy to Amazon EKS
+
+DockerHub Repository connected to Jenkins.
+
+Terraform provisions:
 - VPC
-- 2 public subnets
-- Internet gateway and route table
-- Security group for Jenkins
-- IAM role and instance profile for EC2
-- Jenkins EC2 instance
+- IAM Roles
+- EC2
+- Amazon EKS Cluster
 
-Update `terraform/terraform.tfvars` before applying.
-Webhook Test
+Amazon EKS Cluster contains:
+- Namespace
+- Deployment
+- Pods
+- Service (LoadBalancer)
+
+Users access the application through AWS Elastic LoadBalancer.
+
+Monitoring Stack:
+- Prometheus collects Kubernetes metrics
+- Grafana visualizes dashboards
+
+Use official AWS icons, Docker, Kubernetes, Jenkins, GitHub, Prometheus, and Grafana logos.
+
+Use arrows to clearly represent the deployment flow.
+
+Style:
+Professional AWS architecture diagram suitable for GitHub README and LinkedIn.
+```
+
+## Architecture Diagram Nodes
+
+Use these nodes when recreating the diagram in Visio, Draw.io, Lucidchart, or similar tools:
+
+- Developer
+- GitHub
+- GitHub Webhook
+- Jenkins (AWS EC2)
+- Checkout Code
+- Docker Build
+- DockerHub
+- Terraform
+- Amazon EKS
+- Deployment
+- Pods
+- Service (LoadBalancer)
+- Application
+- Prometheus
+- Grafana
+- Monitoring Dashboard
+
+## Author
+
+Ranjith
